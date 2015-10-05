@@ -14,7 +14,7 @@ argv = sys.argv[0:];
 argc = len(argv);
 
 #camera argument - char '0' is 48 in ASCII
-camera = ord(argv[1])-48;
+camera = int(argv[1]);
 #video filename
 videofile = argv[2]
 
@@ -30,7 +30,7 @@ fourcc = cv2.cv.CV_FOURCC('X','V', 'I', 'D')
 out = cv2.VideoWriter(videofile,fourcc, 20.0, (640,480))
 
 while(cap.isOpened()):
-    sleep(0.5)
+    #sleep(0.5)
     ret, frame = cap.read()
     if ret==True:
 
@@ -39,9 +39,11 @@ while(cap.isOpened()):
 
         cv2.imshow('frame',frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+			print 'End of recording.'
+			break
     else:
         break
+        'Camera closed.'
 
 # Release everything if job is finished
 cap.release()

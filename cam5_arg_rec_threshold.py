@@ -27,6 +27,14 @@ H = 0.4
 alpha = 36
 npixel = 480
 
+# Define view areas
+
+LOWER_VIEW = 480 - 50
+
+CENTER_VIEW = 640/2
+LEFT_VIEW = CENTER_VIEW - 80
+RIGHT_VIEW = CENTER_VIEW + 80 
+
 '''
 def distance(H, alpha, theta, npixel, y):
 	d1 = H/math.cos(math.radians(theta))
@@ -58,7 +66,19 @@ def normalize(arr):
 
 def navigation(cx,cy,pitch):
 	#print cx, cy # for a while for tests
-	print cx
+	print 'x = '+str(cx)+'y = '+str(cy)
+	if (cy >= LOWER_VIEW):
+		print 'Got there'
+	elif (cx <= LEFT_VIEW):
+		print 'On the left'
+	elif (cx >= RIGHT_VIEW):
+		print 'On the left'
+	elif (cx == -1 or cy == -1):
+		print 'No white area'
+	else:
+		print 'In the center'
+
+	print '\n'
 	'''
 	if len(pitch) > 0:
 		#d = distance(H, alpha, theta+pitch, npixel, cy)
@@ -87,13 +107,15 @@ if __name__ == "__main__":
 	if (arg_option == 'cam'):
 
 		fourcc = cv2.cv.CV_FOURCC(*'YUYV')
-		out = cv2.VideoWriter('output'+arg_address+'.avi',fourcc, 10, (640,npixel)) # w,h
+		out = cv2.VideoWriter('out_cam' + arg_address + '.avi',fourcc, 10, (640,npixel)) # w,h
 		cap = cv2.VideoCapture(int(arg_address))
+		name_window = 'out_cam' + str(arg_address)
 		print "Selected camera index:" + repr(arg_address)
 
 	elif (arg_option == 'file'):
 
 		cap = cv2.VideoCapture(arg_address)
+		name_window = 'File: ' + str(arg_address)
 		print "Loading video from file:" + repr(arg_address)
 
 	else:
@@ -122,7 +144,7 @@ if __name__ == "__main__":
 	#ser = serial.Serial('/dev/ttyS0', 115200)
 	#ser.flushInput()
 
-	print "start"
+	print "Start."
 	k = ord('a')
 	keep_going = False
 
@@ -137,15 +159,15 @@ if __name__ == "__main__":
 			k = cv2.waitKey(100);
 			if k == ord('c'):
 				keep_going = not keep_going
-				print 'Frame by frame'
+				#print 'Frame by frame'
 
 		else:
 			while (k != ord('p') and k != ord('q') and k != ord('c')):
 				k = cv2.waitKey()
-				print 'Next'
+				#print 'Next'
 				if k == ord('c'):
 					keep_going = not keep_going
-					print 'Continue'
+					#print 'Continue'
 
 		# in first, we check incoming message from Arduino
 		'''
@@ -199,24 +221,29 @@ if __name__ == "__main__":
 			
 					cv2.circle(gray,(cx,cy),10,0,-1)
 					cv2.circle(edges,(cx,cy),10,128,-1)
-					if navigation(cx,cy,"arduino") == -1:
-						print "Error: Can't send data to arduino"
-				
-					cv2.imshow('2',frame)
-					cv2.imshow('1',gray)
-					#out.write(frame)
+					
+					cv2.imshow(name_window,frame)
+					cv2.imshow('Filter',gray)
+					if (arg_option == 'cam'):
+						out.write(frame)
 				else:
 					print "Error: Can't calculate centroid"
 			else:
-				print "Warning: No white areas"
+				cx = -1
+				cy = -1
+				#print "Warning: No white areas.\n"
+
+			if navigation(cx,cy,"arduino") == -1:
+						print "Error: Can't send data to arduino"
+
 			if cv2.waitKey(100) & 0xFF == ord('q'):
 				break
 		else:
-			print "Error: Problem with a cam"
+			print "Error: Problem with cam."
 			break
 
 	cap.release()
-	#out.release()
+	out.release()
 	cv2.destroyAllWindows()
 
 	sys.exit(0)
