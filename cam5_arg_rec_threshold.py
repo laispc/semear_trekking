@@ -63,16 +63,16 @@ def navigation(cx,cy,pitch):
 		print 'No white area'
 		direction = -1
 	elif (cy > LOWER_VIEW and cx < WIDTH - GAP - (cy/(math.tan(ALFA))) and cx > GAP + (cy/(math.tan(ALFA))) ):
-		print 'Center'
+		print 'Center. Robot arrived.'
 		direction = 0
 	elif (cx <= GAP + (cy/math.tan(ALFA))):
-		print 'Left'
+		print 'Go left'
 		direction = 1
 	elif (cx >= WIDTH - GAP - (cy/math.tan(ALFA))):
-		print 'Right'
+		print 'Go right'
 		direction = 2
 	else:
-		print 'Front'
+		print 'Straight ahead'
 		direction = 3
 	print '\n'
 
