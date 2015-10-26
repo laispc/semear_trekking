@@ -20,6 +20,7 @@ import serial
 import time
 import os, pygame
 from pygame.locals import *
+import math
 
 # Define constants
 theta = 58
@@ -28,29 +29,17 @@ alpha = 36
 npixel = 480
 
 # Define view areas
-
-LOWER_VIEW = 480 - 50
+WIDTH = 640
+HEIGHT = 480
+LOWER_VIEW = HEIGHT - 50
+GAP = 20
+ALFA = 70
+ALFA_RADS = float(1.0*ALFA/180*math.pi)	#degrees
 
 CENTER_VIEW = 640/2
 LEFT_VIEW = CENTER_VIEW - 80
 RIGHT_VIEW = CENTER_VIEW + 80 
 
-'''
-def distance(H, alpha, theta, npixel, y):
-	d1 = H/math.cos(math.radians(theta))
-	z = math.sin(math.radians(alpha/2))*H*2/math.cos(math.radians(theta))
-	dpx = y*z/npixel
-	omega = 90 + alpha/2
-	g = math.sin(math.radians(omega))**2
-	#print g
-	r = (math.cos(math.radians(omega)) + (d1/dpx))**2 + math.sin(math.radians(omega))**2
-	phi = math.degrees(math.asin(math.sqrt(g/r)))
-	epsilon = 90 + alpha/2 - phi
-	gama = epsilon - theta - alpha/2
-	d = math.sin(math.radians(180 - epsilon))*dpx/math.sin(math.radians(gama))
-	distancia = d + H*math.tan(math.radians(theta));
-	return distancia
-'''
 def nothing(x):
 	pass
 
@@ -66,19 +55,29 @@ def normalize(arr):
 
 def navigation(cx,cy,pitch):
 	#print cx, cy # for a while for tests
-	print 'x = '+str(cx)+'y = '+str(cy)
-	if (cy >= LOWER_VIEW):
-		print 'Got there'
-	elif (cx <= LEFT_VIEW):
-		print 'On the left'
-	elif (cx >= RIGHT_VIEW):
-		print 'On the left'
-	elif (cx == -1 or cy == -1):
-		print 'No white area'
-	else:
-		print 'In the center'
+	print 'x = '+str(cx)+'	y = '+str(cy)
+	
+	direction = -1;
 
+	if (cx == -1 or cy == -1):
+		print 'No white area'
+		direction = -1
+	elif (cy > LOWER_VIEW and cx < WIDTH - GAP - (cy/(math.tan(ALFA))) and cx > GAP + (cy/(math.tan(ALFA))) ):
+		print 'Center. Robot arrived.'
+		direction = 0
+	elif (cx <= GAP + (cy/math.tan(ALFA))):
+		print 'Go left'
+		direction = 1
+	elif (cx >= WIDTH - GAP - (cy/math.tan(ALFA))):
+		print 'Go right'
+		direction = 2
+	else:
+		print 'Straight ahead'
+		direction = 3
 	print '\n'
+
+	# Then send direction code to arduino
+
 	'''
 	if len(pitch) > 0:
 		#d = distance(H, alpha, theta+pitch, npixel, cy)
