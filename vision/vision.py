@@ -4,22 +4,20 @@ import cv2
 import numpy as np
 import math
 import serial
-
+import time
 
 #-----------------------CALIBRATION--------------------------#
 # Serial setting
-B=115200
+B=9600
 # White area detection
-XRES=320
-YRES=240
+WIDTH=320
+HEIGHT=240
 HMIN=0
 HMAX=240
 TMIN=100
 TMAX=200
 
 # Define view areas
-WIDTH = 640
-HEIGHT = 480
 LOWER_VIEW = HEIGHT - 50
 GAP = 20
 ALFA = 70
@@ -43,14 +41,14 @@ def region(cx,cy):
 
 rcv = ""
 ser = serial.Serial('/dev/ttyS0', B, timeout=0)
-ser.open();
+#ser.open();
 ser.flushInput()
 log = open('camlog.txt','a')
 log.write("\n\n\nStart at "+time.strftime("%d-%m-%Y, %H:%M:%S")+"\n\n")
 
 cap=cv2.VideoCapture(0)
-cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH,XRES)
-cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT,YRES)
+cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH,WIDTH)
+cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT,HEIGHT)
 
 while 1:
 	q = ser.read(1)
@@ -60,7 +58,7 @@ while 1:
 	if q == "Q":
 		ret,frame = cap.read()
 		if ret:
-			cframe = frame[HMIN:HMAX, 1:XRES]
+			cframe = frame[HMIN:HMAX, 1:WIDTH]
 			gray = cv2.cvtColor(cframe, cv2.COLOR_BGR2GRAY)	
 			_,gray = cv2.threshold(gray,TMAX,TMIN,0)
 			
@@ -85,8 +83,8 @@ while 1:
 			R = region(cx,cy)
 			answer(R)
 			log.write(time.strftime("%d-%m-%Y, %H:%M:%S")+"cx="+str(cx)+", cy="+str(cy)+", region="+str(R)+"\n")
-			cv2.imwrite("pic_"+time.time()+"_cframe.jpg",edges)
-			cv2.imwrite("pic_"+time.time()+"_edges.jpg",edges)
+			cv2.imwrite("pic_"+str(time.time())+"_cframe.jpg",edges)
+			cv2.imwrite("pic_"+str(time.time())+"_edges.jpg",edges)
 		else:
 			log.write(time.strftime("%d-%m-%Y, %H:%M:%S")+"Error(0): Problem with cam")
 		q = ""
