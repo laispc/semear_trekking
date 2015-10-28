@@ -1,3 +1,5 @@
+#include <TinyGPS.h>
+
 //Código Trekking arduino Data : 23/01/2015
 
 //Leitura do GPS e da IMU ,cálculo do ângulo funcionando.
@@ -5,7 +7,6 @@
 //Apenas para o primeiro ponto do campo.
 
 // SEMEAR EESC USP 2015
-#include "./TinyGPS.h"    
 
 //#######################################################
 //Para trabalhar com múltiplos arquivos, seguir algumas regras:
@@ -27,7 +28,7 @@
 
       //controle dos motores para angulos pequenos
 void turnCounterClocklwise();                         //controle dos motores para "angError" grandes (maiores que 45º)  ou quando está proximo do objetivo
-void turnClockWise();                                 //controle dos motores para "angError" grandes (menores que -45º)     
+void turnClockwise();                                 //controle dos motores para "angError" grandes (menores que -45º)     
 void moveForward();
 void stopMotors();
 
@@ -39,4 +40,3 @@ float readIMU();
 void lightBlink ();
 int readCubie();
 void getGPS();
-

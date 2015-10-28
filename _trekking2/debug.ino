@@ -1,22 +1,26 @@
 
 void printTest ()
 {
-//  printInfo(lightCounter,0,"Ponto: ",' ');
-//  //printInfo(distancia,2,"dist: ", ' ');
-//  printInfo(beta,2,"beta: ",' ');
-//  //printInfo(angCerto,2,"angCerto: ",' ');
-//  printInfo(angMeas,2,"angMeas: ",' ');
-//  //printInfo(angApontado,2,"angApontado: ",' ');
-//  printInfo(angDif,2,"Dif: ",' ');
-//  printInfo(flat,6,"Lat: ",' ');
-//  printInfo(flon,6,"Lon: ",' ');
-//  printInfo(cx,0,"cx: ",' ');
-//  printInfo(cy,0,"cy: ",'\n');
-}
-//
-void printInfo(float variavel, int casas, String id, char complemento) 
-{
-//  Serial.print(id);
-//  Serial.print(variavel,casas);
-//  Serial.print(complemento);
+   getGPS(); // Get current GPS coordinates
+    
+    if (abs(latCurrentTarget-gpsCurrentLat)<0.000055 && abs(lonCurrentTarget-gpsCurrentLon)<0.000055)
+    {
+      Serial.println("moveToTarget()");
+      Serial.println("Lampada vai piscar");
+      Serial.println(gpsCurrentLat, 7);
+      Serial.println(gpsCurrentLon, 7);
+      delay(1000);
+      lightBlink ();
+    }
+    else
+    {
+      yaw=readIMU();
+      rotAngle = rotationAngle();
+      Serial.println("moveUntilClose");
+      Serial.println(gpsCurrentLat);
+      Serial.println(gpsCurrentLon);
+      Serial.println(yaw);
+      Serial.println(yaw2);
+      Serial.println(lightCounter);
+    }
 }
