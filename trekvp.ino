@@ -8,7 +8,6 @@ String cubieconf = "320,240,000,240,100,200,050,020,070,080,080,0,.";
 float gpsCurrentLat, gpsCurrentLon;
 float gpserror = 0.00001;
 
-
 //________________Functions_________________
 char askcubie(char key, String msg) {
 	Serial2.write(key);
@@ -51,19 +50,24 @@ bool feedgps() {
 	return false;
 }
 
-void move(char r) {
-	//move by vision
-	
-	
-}
-
-void amove(float a) {
-	//move by gps
-	
-}
-
 void fire() {
-	//signal when on the point
+	int i;
+	for (i=0; i<=4; i++){
+		digitalWrite (53,HIGH);
+		delay(500);
+		digitalWrite (53,LOW);
+		delay(500);
+	}
+}
+
+void vismove(char r) {
+	// move by vision
+	
+	
+}
+
+void gpsmove(float lat, float lon) {
+	// move by gps
 	
 	
 }
@@ -74,6 +78,7 @@ void setup() {
 	Serial3.begin(9600); //for GPS
 	Serial4.begin(9600); //for compass
 	askcubie("C", cubieconf);
+	pinMode(LAMPADA,OUTPUT);
 }
 
 void loop() {
@@ -84,8 +89,7 @@ void loop() {
 			 && (gpscurrent[1]-points[i+3] < gpserror)) {
 			//motion by vision
 			char region = askcubie("Q",String(""));
-			move(region);
-			
+			vismove(region);
 			if (region == "S"){
 				fire();
 				i++;
@@ -93,7 +97,7 @@ void loop() {
 			}
 		} else {
 			//motion by gps
-			
+			gpsmove(gpscurrent[0],gpscurrent[1]);
 		}
 	}
 	FINISH:
@@ -106,3 +110,5 @@ void loop() {
 	askcubie("S", ts);
 	while (1==1){delay(10000);}
 }
+
+
