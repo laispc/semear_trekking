@@ -3,7 +3,7 @@
 void getGPS(){
   bool newdata = false;
   unsigned long start = millis();
-  while (millis() - start < 300) {    // msec to update gps data
+  while (millis() - start < 200) {    // msec to update gps data
     if (feedgps())  newdata = true;
   }
   if (newdata) {

@@ -1,5 +1,6 @@
 float readIMU ()
 {
+ 
   Serial3.flush();
   while(Serial3.available())
   { 
@@ -18,7 +19,6 @@ float readIMU ()
      }
   }
 //  Serial.println(yaw);
-  if (yaw<0) yaw2=yaw+360;
-  else yaw2=yaw;
-  return yaw2;
+  return yaw;
+
 }

@@ -17,7 +17,7 @@ void moveUntilClose(float angError)
 
 void moveToTarget()
 {
-  numberCubie=readCubie();
+/*  numberCubie=readCubie();
   switch (numberCubie)
   {
   case 0:
@@ -44,6 +44,9 @@ void moveToTarget()
   moveForward();
   break;
   }
+ */
+  stopMotors();
+  lightBlink ();
 } 
 
 

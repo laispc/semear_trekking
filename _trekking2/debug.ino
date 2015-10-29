@@ -7,8 +7,8 @@ void printTest ()
     {
       Serial.println("moveToTarget()");
       Serial.println("Lampada vai piscar");
-      Serial.println(gpsCurrentLat, 7);
-      Serial.println(gpsCurrentLon, 7);
+      Serial.println(gpsCurrentLat, 9);
+      Serial.println(gpsCurrentLon, 9);
       delay(1000);
       lightBlink ();
     }
@@ -17,10 +17,10 @@ void printTest ()
       yaw=readIMU();
       rotAngle = rotationAngle();
       Serial.println("moveUntilClose");
-      Serial.println(gpsCurrentLat);
-      Serial.println(gpsCurrentLon);
-      Serial.println(yaw);
-      Serial.println(yaw2);
+      Serial.println(gpsCurrentLat, 9);
+      Serial.println(gpsCurrentLon, 9);
+      Serial.println(rotAngle);
+      Serial.println (targetAngle);
       Serial.println(lightCounter);
     }
 }

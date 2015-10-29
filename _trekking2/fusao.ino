@@ -4,10 +4,9 @@ float rotationAngle()
 {
   // All angles in degrees
   float pi=3.14159265358979323846;
-  float currentRobotAngle = yaw;
+  float currentRobotAngle;
   float currentLat = gpsCurrentLat; 
-  float currentLon = gpsCurrentLon;
-  float targetAngle;							// Angle of target
+  float currentLon = gpsCurrentLon;      			// Angle of target
   float rotationAngle;						// The answer we want!
   float dLat, dLon;							// Diffences between robot and target coordinates
     
@@ -17,18 +16,20 @@ float rotationAngle()
   if (dLon > -1E-10 and dLon < 1E-10 and dLat >= 0)	targetAngle = 90;
   else if (dLon > -1E-10 and dLon<1E-10 and dLat < 0)	targetAngle = -90;
   else	targetAngle = atan(dLat/dLon)*180/pi;
-    
-  if ((dLon >= 0 and dLat >= 0) or (dLon >= 0 and dLat <= 0))	// targetAngle in I or IV quads
+  if (dLon<0)
   {
-    rotationAngle = -(currentRobotAngle - COMPASS_REFERENCE_ANGLE - targetAngle);
+    targetAngle+=180;
   }
-  else	// targetAngle in II or III quads
+  
+  if(yaw>COMPASS_REFERENCE_ANGLE)
   {
-    rotationAngle = -(currentRobotAngle - COMPASS_REFERENCE_ANGLE - targetAngle - 180);
+    currentRobotAngle=COMPASS_REFERENCE_ANGLE-yaw+360;
   }
-    
-    	// Rotation angles corrections
-    
+  else currentRobotAngle=COMPASS_REFERENCE_ANGLE-yaw;
+  
+  rotationAngle=-targetAngle+currentRobotAngle;
+  
+    	// Rotation angles corrections    
   if (rotationAngle > 180)	rotationAngle = rotationAngle - 360;
   if (rotationAngle < -180)	rotationAngle = rotationAngle + 360;
     
