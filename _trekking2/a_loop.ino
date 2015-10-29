@@ -6,7 +6,7 @@ void loop()
   {
     case 0:
     if (DEBUG)
-    {
+    {  
       printTest();
     }
     else  state++;
@@ -33,8 +33,5 @@ void loop()
     }
 
     break;
-    
-    
   }// end switch
-
 }//end main loop

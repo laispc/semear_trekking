@@ -1,27 +1,23 @@
 void moveUntilClose(float angError)
 {
+  control=kp*angError;
   if (angError>ANGLETHRESHOLD||angError<=-ANGLETHRESHOLD)
   {
-    if (angError>ANGLETHRESHOLD)
-    {
-      turnCounterClockwise();
-      control=kp*angError;
-    }
+    if (angError>ANGLETHRESHOLD) turnCounterClockwise();
     else turnClockwise();
 //    currentLoopTime=millis();
-    control=kp*angError;
   }
   else
   {
 //    currentLoopTime=millis();
-    control=kp*angError;
     motorsControl(control);
   } 
 } 
 
+
 void moveToTarget()
 {
-  numberCubie=lerCubie();
+/*  numberCubie=readCubie();
   switch (numberCubie)
   {
   case 0:
@@ -30,30 +26,33 @@ void moveToTarget()
   delay(500);
   lightBlink();
   control=0;
-  sumError=0;
+//  sumError=0;
   break;
   
   case 1:
   
-  turnClockWise();
+  turnClockwise();
   break;
   
   case 2:
   
-  turnCounterClockWise;
+  turnCounterClockwise();
   break;
   
-  case 3;
+  case 3:
   
-  moveForward;
+  moveForward();
   break;
   }
+ */
+  stopMotors();
+  lightBlink ();
 } 
 
 
 void stopMotors()
 {
-  for (int i=0; i<=128; i++
+  for (int i=0; i<=128; i++)
   {
   analogWrite (MOTORRIGHT1, i);
   analogWrite (MOTORRIGHT2, i);
@@ -70,6 +69,7 @@ void moveForward()
   analogWrite (MOTORLEFT1, POWERFORWARD);
   analogWrite (MOTORLEFT2, POWERFORWARD);
 }
+
 void turnCounterClockwise()
 {
   analogWrite (MOTORRIGHT1, MAXIMUMMOTORPOWER);
@@ -78,7 +78,7 @@ void turnCounterClockwise()
   analogWrite (MOTORLEFT2, 255-MAXIMUMMOTORPOWER);
 }
 
-void turnClockwise ()
+void turnClockwise()
 {
   analogWrite (MOTORRIGHT1, 255-MAXIMUMMOTORPOWER);
   analogWrite (MOTORRIGHT2, 255-MAXIMUMMOTORPOWER);
@@ -109,6 +109,7 @@ void motorsControl(float controlMotor)
   }
   else
   {
+    
     analogWrite (MOTORRIGHT1, MAXIMUMMOTORPOWER-powerToMotor);
     analogWrite (MOTORRIGHT2, MAXIMUMMOTORPOWER-powerToMotor);
     analogWrite (MOTORLEFT1, MAXIMUMMOTORPOWER);

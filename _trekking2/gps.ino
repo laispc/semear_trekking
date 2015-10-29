@@ -1,14 +1,16 @@
 
 //=======================FUNCTIONS================================
-void getgps(){
+void getGPS(){
   bool newdata = false;
   unsigned long start = millis();
-  while (millis() - start < 300) {    // msec to update gps data
+  while (millis() - start < 200) {    // msec to update gps data
     if (feedgps())  newdata = true;
   }
   if (newdata) {
     gpsdump(gps);
   }
+  lonCurrentTarget = LONPOINT[lightCounter];     //longitude do objetivo atual
+  latCurrentTarget = LATPOINT[lightCounter];      //latitude do objetivo atual
 }
 // Get and process GPS data
 void gpsdump(TinyGPS &gps) { 

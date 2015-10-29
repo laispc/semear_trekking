@@ -6,29 +6,57 @@ import math
 import serial
 import time
 
+log = open('camlog.txt','a')
+log.write("\n\n\nStart at "+time.strftime("%d-%m-%Y, %H:%M:%S")+"\n\n")
+
+ser = serial.Serial('/dev/ttyS0', 9600, timeout=0)
+ser.flushInput()
+
 #-----------------------CALIBRATION--------------------------#
-# Serial setting
-B=9600
 # White area detection
-WIDTH=320
-HEIGHT=240
+WIDTH=0
+HEIGHT=0
 HMIN=0
-HMAX=240
-TMIN=100
-TMAX=200
+HMAX=0
+TMIN=0
+TMAX=0
 
 # Define view areas
-LOWER_VIEW = HEIGHT - 50
-GAP = 20
-ALFA = 70
-ALFA_RADS = float(1.0*ALFA/180*math.pi)	#degrees
+LOWER_VIEW = 0
+GAP = 0
+ALFA = 0.0
+ALFA_RADS = 0.0
 
-CENTER_VIEW = 640/2
-LEFT_VIEW = CENTER_VIEW - 80
-RIGHT_VIEW = CENTER_VIEW + 80 
+CENTER_VIEW = 0
+LEFT_VIEW = 0
+RIGHT_VIEW = 0
 #------------------------------------------------------------#
-def answer(R):
-	ser.write(str(R))
+
+def settings():
+	#get calibration constants as "320,240,000,240,100,200,050,020,070,080,080,0,." (len=47)
+	c = "";
+	while 1:
+		c = ser.read(47)
+		cal = c.split(',')
+		if cal[-1] == ".":
+			WIDTH=int(cal[0])
+			HEIGHT=int(cal[1])
+			HMIN=int(cal[2])
+			HMAX=int(cal[3])
+			TMIN=int(cal[4])
+			TMAX=int(cal[5])
+			LOWER_VIEW=int(cal[6])
+			GAP=int(cal[7])
+			ALFA=float(cal[8])
+			ALFA_RADS=float(1.0*ALFA/180*math.pi)
+			CENTER_VIEW=WIDTH/2
+			LEFT_VIEW=int(cal[9])
+			RIGHT_VIEW=int(cal[10])
+			IMGSAVE=int(cal[11])
+			log.write(time.strftime("%d-%m-%Y, %H:%M:%S")+"Configuration: "+c)
+			cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH,WIDTH)
+			cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT,HEIGHT)
+			break
 
 def region(cx,cy):
 	if ((cx == -1 or cy == -1) or (cx >= WIDTH - GAP - (cy/math.tan(ALFA)))): 
@@ -39,21 +67,16 @@ def region(cx,cy):
 		return "L"
 	return "F"
 
-rcv = ""
-ser = serial.Serial('/dev/ttyS0', B, timeout=0)
-#ser.open();
-ser.flushInput()
-log = open('camlog.txt','a')
-log.write("\n\n\nStart at "+time.strftime("%d-%m-%Y, %H:%M:%S")+"\n\n")
+cap=cv2.VideoCapture(-1)
 
-cap=cv2.VideoCapture(0)
-cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH,WIDTH)
-cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT,HEIGHT)
-
+q=""
 while 1:
 	q = ser.read(1)
 	if q == "S":
 		break
+	
+	if q == "C":
+		settings()
 	
 	if q == "Q":
 		ret,frame = cap.read()
@@ -81,12 +104,13 @@ while 1:
 				cx = -1
 				cy = -1
 			R = region(cx,cy)
-			answer(R)
 			log.write(time.strftime("%d-%m-%Y, %H:%M:%S")+"cx="+str(cx)+", cy="+str(cy)+", region="+str(R)+"\n")
-			cv2.imwrite("pic_"+str(time.time())+"_cframe.jpg",edges)
-			cv2.imwrite("pic_"+str(time.time())+"_edges.jpg",edges)
+			if IMGSAVE==1:
+				cv2.imwrite("pic_"+str(time.time())+"_cframe.jpg",edges)
+				cv2.imwrite("pic_"+str(time.time())+"_edges.jpg",edges)
+			ser.write(str(R))
 		else:
-			log.write(time.strftime("%d-%m-%Y, %H:%M:%S")+"Error(0): Problem with cam")
+			log.write(time.strftime("%d-%m-%Y, %H:%M:%S")+"Error(0): Problem with reading")
 		q = ""
 
 ser.close()
