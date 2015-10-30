@@ -21,8 +21,8 @@ import time
 import os
 
 # Define view areas
-WIDTH = 640
-HEIGHT = 480
+WIDTH = 640/2
+HEIGHT = 480/2
 
 GAP = 0.15*WIDTH
 ALFA = 80	#degrees
@@ -118,9 +118,9 @@ if __name__ == "__main__":
 			_,gray = cv2.threshold(gray,thres,thres_highlight,0)
 			
 			# canny
-			edges = cv2.Canny(gray,100,200)
-			kernel = np.ones((5,5),np.float32)/10
-			edges = cv2.filter2D(edges,-1,kernel)
+			#edges = cv2.Canny(gray,100,200)
+			#kernel = np.ones((5,5),np.float32)/10
+			#edges = cv2.filter2D(edges,-1,kernel)
 
 			# erode
 			img_erode = gray
@@ -140,10 +140,10 @@ if __name__ == "__main__":
 					cy = int(M['m01']/M['m00'])
 			
 					cv2.circle(erosion,(cx,cy),10,0,-1)
-					cv2.circle(edges,(cx,cy),10,128,-1)
+					#cv2.circle(edges,(cx,cy),10,128,-1)
 					
 					# Show results
-					#cv2.imshow(name_window,frame)
+					cv2.imshow(name_window,frame)
 					cv2.imshow('Eroded',erosion)
 					#cv2.imshow('Filter',gray)
 					

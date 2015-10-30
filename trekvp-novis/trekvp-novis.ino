@@ -276,25 +276,27 @@ void setup() {
 }
 
 void loop() {
-	while(1==1) { //Serial.println("main loop");
-		while (1==1){
-		  getGPS();   
-      if ((gpsCurrentLat<filterLat)&&(gpsCurrentLon<filterLon)) break;
+	while(1==1) 
+	{ 
+		//Serial.println("main loop");
+		while (1==1)
+		{
+		  	getGPS();   
+      		if ((gpsCurrentLat < filterLat) && (gpsCurrentLon<filterLon)) break;
 		}
-
 		float gpscurrent[2] = {gpsCurrentLat, gpsCurrentLon};
 		
 		float latcrit = (gpscurrent[0]-points[PointNum]);
-    float loncrit = (gpscurrent[1]-points[PointNum+3]);
+    	float loncrit = (gpscurrent[1]-points[PointNum+3]);
 
-    if (latcrit<=0) latcrit = -1.0*latcrit;
-    if (loncrit<=0) loncrit = -1.0*loncrit;
+    	if (latcrit<=0) latcrit = -1.0*latcrit;
+    	if (loncrit<=0) loncrit = -1.0*loncrit;
 		
 		if (( latcrit < gpserror) && (loncrit < gpserror)) { 
 //Serial.println("check-point");
 			//motion by vision
       
-			char region = askcubie('Q',String(""));
+			char region = 'S'; //= askcubie('Q',String(""));
 			
 			if (region == 'S'){
 				stopMotorsPoint();
